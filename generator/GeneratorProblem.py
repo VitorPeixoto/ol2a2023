@@ -1,7 +1,7 @@
 from pymoo.core.problem import Problem
 
 import jnius_config
-jnius_config.add_classpath("/home/vitor/Documentos/tcc/Mario-AI-Framework/out/artifacts/Mario_AI_Framework_jar/*")
+jnius_config.add_classpath("/home/peixoto/Documentos/tcc/Mario-AI-Framework/out/artifacts/Mario_AI_Framework_jar/*")
 
 from jnius import autoclass
 

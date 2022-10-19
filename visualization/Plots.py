@@ -20,20 +20,20 @@ def plot_solutions(problem, res, algorithm, dimension, run):
         #plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
         plot.add(res.F, s=10)
 
-        plot.save('scatter_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
+        plot.save('outputs/temp/scatter_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
                   dpi=80, bbox_inches="tight")
 
         plot = PCP(figsize=(15,15))
         plot.add(res.F)
 
-        plot.save('pcp_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
+        plot.save('outputs/temp/pcp_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
             dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
                   dpi=80, bbox_inches="tight")
 
         plot = Heatmap(figsize=(15,15))
         plot.add(res.F)
 
-        plot.save('heatmap_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
+        plot.save('outputs/temp/heatmap_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
             dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
                   dpi=80, bbox_inches="tight")
 
@@ -41,7 +41,7 @@ def plot_solutions(problem, res, algorithm, dimension, run):
         for chunk in list(chunks(res.F, ceil(sqrt(len(res.F))))):
             plot.add(chunk)
 
-        plot.save('petal_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
+        plot.save('outputs/temp/petal_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
             dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
                   dpi=80, bbox_inches="tight")
 
@@ -49,6 +49,6 @@ def plot_solutions(problem, res, algorithm, dimension, run):
         for chunk in list(chunks(res.F, ceil(sqrt(len(res.F))))):
             plot.add(chunk)
 
-        plot.save('radar_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
+        plot.save('outputs/temp/radar_' + algorithm.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
             dimension['max_evals']) + "_" + str(run) + ".pdf", transparent=False,
                   dpi=80, bbox_inches="tight")

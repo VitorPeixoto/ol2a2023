@@ -1,27 +1,78 @@
+import os
 import sys
 import time
+from datetime import datetime
+from pprint import pprint
 
+import numpy as np
 from pymoo.algorithms.moo.ctaea import CTAEA
 from pymoo.algorithms.moo.nsga3 import NSGA3
 from pymoo.algorithms.moo.rvea import RVEA
-from pymoo.factory import get_sampling, get_crossover, get_mutation, get_reference_directions
-from pymoo.operators.mixed_variable_operator import MixedVariableSampling, MixedVariableMutation, MixedVariableCrossover
 from pymoo.optimize import minimize
 from pymoo.util.termination.default import MultiObjectiveDefaultTermination
 from pymoo.util.termination.max_eval import MaximumFunctionCallTermination
-from pymoo.visualization.scatter import Scatter
+
 from ManyObjectiveGenerator import ManyObjectiveGenerator
 from manyobjective.algorithms import params
 from visualization.Plots import plot_solutions
-from random import randrange
 
 dimensions = [
-    {"pop_size": 10, "max_evals": 100},
-    {"pop_size": 25, "max_evals": 500},
-    {"pop_size": 40, "max_evals": 800},
+    #{"pop_size": 2, "max_evals": 10, "iterations": 2},
+    #{"pop_size": 10, "max_evals": 100},
+    #{"pop_size": 25, "max_evals": 500},
+    {"pop_size": 20, "max_evals": 1000, "iterations": 30},  
 ]
 
 problem = ManyObjectiveGenerator()
+
+outputPath = os.path.join(os.getcwd(), 'outputs')
+tempPath = os.path.join(outputPath, 'temp')
+os.makedirs(tempPath, exist_ok=True)
+
+individuals = open(os.path.join(tempPath, 'individuals.log'), 'a')
+
+def fetch_checkpoint(algorithm_type, termination, dimension, run):
+    algorithm = algorithm_type(**params(dimension))
+    filename = 'checkpoint_' + algorithm_type.__name__ + "_" + str(dimension['pop_size']) + "_" + str(
+        dimension['max_evals']) + "_" + str(run)
+    res = None
+    try:
+        checkpoint, = np.load(os.path.join(tempPath, filename + ".npy"), allow_pickle=True).flatten()
+        print("Checkpoint found. Skipping...")
+        res = minimize(
+                problem,
+                checkpoint,
+                termination,
+                copy_algorithm=False,
+                verbose=True
+            )
+
+    except FileNotFoundError:
+        start_time = time.time()
+        res = minimize(
+            problem,
+            algorithm,
+            termination,
+            copy_algorithm=False,
+            verbose=True
+        )
+
+        print("Minimization stopped. Time elapsed: %s / %s seconds" % (time.time() - start_time, res.exec_time))
+
+        print("Non-dominated solutions (x):")
+        pprint(res.X)
+        print("Non-dominated solutions (f):")
+        pprint(res.F)
+
+        individuals.write("\n\nIndividuals from " + str(run) + "/10 with dimension " + str(dimension) + " using " + algorithm_type.__name__)
+        individuals.write(str(problem.individuals))
+        individuals.flush()
+
+        plot_solutions(problem, res, algorithm_type, dimension, run)
+
+        np.save(os.path.join(tempPath, filename), algorithm)
+
+    return res
 
 def run_dimension(dimension):
     termination = MultiObjectiveDefaultTermination(
@@ -35,42 +86,24 @@ def run_dimension(dimension):
         # Mais usado na literatura, numero de avaliações de fitness, "1 por individuo por geração"
     )
 
-    for algorithm in [NSGA3, CTAEA, RVEA]:
-        #seed = 1 + randrange(2**32 - 1)
-        for run in range(0, 10):
-            print("Starting minimization " + str(run) + "/10 with dimension " + str(dimension) + " using " + algorithm.__name__)
-            start_time = time.time()
+    for algorithm_type in [NSGA3, CTAEA, RVEA]:
+        for run in range(0, dimension['iterations']):
+            print("Starting minimization " + str(run) + "/10 with dimension " + str(dimension) + " using " + algorithm_type.__name__, flush=True)
 
-            if(algorithm.__name__ == "RVEA"):
+            if(algorithm_type.__name__ == "RVEA"):
                 termination = MaximumFunctionCallTermination(
                     n_max_evals=dimension['max_evals']
                     # Mais usado na literatura, numero de avaliações de fitness, "1 por individuo por geração"
                 )
 
-            res = minimize(
-                problem,
-                algorithm(**params(dimension)),
-                termination,
-                verbose=True
-                #seed=seed
-            )
+            fetch_checkpoint(algorithm_type, termination, dimension, run)
 
-            print("Minimization stopped. Time elapsed: %s seconds" % (time.time() - start_time))
+with open(os.path.join(tempPath, 'out.log'), 'a') as sys.stdout:
+    for dimension in dimensions:
+        run_dimension(dimension)
 
-            print("Non-dominated solutions (x):")
-            print(res.X)
-            print("Non-dominated solutions (f):")
-            print(res.F)
+individuals.close()
 
-            print(problem.individuals)
+now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-            plot_solutions(problem, res, algorithm, dimension, run)
-
-#now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-#outputPath = os.path.join(os.getcwd(), 'outputs', now)
-
-#os.makedirs(outputPath)
-
-#with open(outFilePath, 'w') as sys.stdout:
-for dimension in dimensions:
-    run_dimension(dimension)
+os.rename(tempPath, os.path.join(outputPath, now))

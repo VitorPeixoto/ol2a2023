@@ -6,7 +6,8 @@ class ManyObjectiveGenerator(GeneratorProblem):
     def __init__(self):
         super().__init__(
             n_var=10,
-            n_obj=6,
+            #n_obj=6,
+            n_obj=4,
             n_constr=1,
             #            type, dif, width, height, time, st_mg, hi_mg, tu_mp, ju_mp, cn_mp
             xl=np.array([0, 0, 149, 16, 30, -5, -5, 1, 1, 0]),
@@ -20,8 +21,8 @@ class ManyObjectiveGenerator(GeneratorProblem):
             -result.getKillsTotal(),
             -(result.getNumJumps() + result.getMaxXJump() + result.getMaxJumpAirTime()),
             -result.getRemainingTime(),
-            -(result.getNumCollectedMushrooms() + result.getNumCollectedFireflower() + result.getCurrentLives()),
-            (result.getNumBumpQuestionBlock() + result.getNumBumpBrick() + result.getNumCollectedTileCoins() + result.getNumDestroyedBricks())
+            #-(result.getNumCollectedMushrooms() + result.getNumCollectedFireflower() + result.getCurrentLives()),
+            #(result.getNumBumpQuestionBlock() + result.getNumBumpBrick() + result.getNumCollectedTileCoins() + result.getNumDestroyedBricks())
         ]
 
     def _evaluate(self, x, out, *args, **kwargs):
