@@ -20,7 +20,7 @@ dimensions = [
     #{"pop_size": 2, "max_evals": 10, "iterations": 2},
     #{"pop_size": 10, "max_evals": 100},
     #{"pop_size": 25, "max_evals": 500},
-    {"pop_size": 20, "max_evals": 1000, "iterations": 30},  
+    {"pop_size": 20, "max_evals": 1000, "iterations": 30},
 ]
 
 problem = ManyObjectiveGenerator()
@@ -88,7 +88,7 @@ def run_dimension(dimension):
 
     for algorithm_type in [NSGA3, CTAEA, RVEA]:
         for run in range(0, dimension['iterations']):
-            print("Starting minimization " + str(run) + "/10 with dimension " + str(dimension) + " using " + algorithm_type.__name__, flush=True)
+            print("Starting minimization " + str(run) + "/" + str(dimension['iterations']) + " with dimension " + str(dimension) + " using " + algorithm_type.__name__, flush=True)
 
             if(algorithm_type.__name__ == "RVEA"):
                 termination = MaximumFunctionCallTermination(

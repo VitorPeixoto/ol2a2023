@@ -14,5 +14,3 @@ class GeneratorProblem(Problem):
     NotchGenerator = autoclass('marioai.levelGenerators.notch.LevelGenerator')
     MarioResult = autoclass('marioai.engine.core.MarioResult')
     RobinBaumgartenAgent = autoclass('marioai.agents.robinBaumgarten.Agent')
-    game = MarioGame()
-    agent = RobinBaumgartenAgent()
