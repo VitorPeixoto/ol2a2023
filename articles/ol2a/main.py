@@ -6,14 +6,15 @@ from pprint import pprint
 
 import numpy as np
 from pymoo.algorithms.moo.ctaea import CTAEA
+from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.algorithms.moo.nsga3 import NSGA3
 from pymoo.algorithms.moo.rvea import RVEA
 from pymoo.optimize import minimize
 from pymoo.util.termination.default import MultiObjectiveDefaultTermination
 from pymoo.util.termination.max_eval import MaximumFunctionCallTermination
 
-from ManyObjectiveGenerator import ManyObjectiveGenerator
-from manyobjective.algorithms import params
+from Ol2aGenerator import Ol2aGenerator
+from articles.ol2a.algorithms import params
 from visualization.Plots import plot_solutions
 
 from pymoo.core.problem import starmap_parallelized_eval
@@ -31,7 +32,7 @@ n_threads = 8
 # initialize the pool
 pool = ThreadPool(n_threads)
 
-problem = ManyObjectiveGenerator(runner=pool.starmap, func_eval=starmap_parallelized_eval)
+problem = Ol2aGenerator(runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
 outputPath = os.path.join(os.getcwd(), 'outputs')
 tempPath = os.path.join(outputPath, 'temp')
@@ -94,7 +95,7 @@ def run_dimension(dimension):
         # Mais usado na literatura, numero de avaliações de fitness, "1 por individuo por geração"
     )
 
-    for algorithm_type in [NSGA3, CTAEA, RVEA]:
+    for algorithm_type in [NSGA2, CTAEA]:
         for run in range(0, dimension['iterations']):
             print("Starting minimization " + str(run) + "/" + str(dimension['iterations']) + " with dimension " + str(dimension) + " using " + algorithm_type.__name__, flush=True)
 

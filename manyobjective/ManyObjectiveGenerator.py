@@ -3,7 +3,7 @@ from generator.GeneratorProblem import GeneratorProblem
 
 
 class ManyObjectiveGenerator(GeneratorProblem):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(
             n_var=10,
             #n_obj=6,
@@ -11,7 +11,8 @@ class ManyObjectiveGenerator(GeneratorProblem):
             n_constr=1,
             #            type, dif, width, height, time, st_mg, hi_mg, tu_mp, ju_mp, cn_mp
             xl=np.array([0,  0,     149,     16,  30, -5, -5, 1, 1,  0]),
-            xu=np.array([2, 15, 2 * 373, 2 * 16, 300,  5,  5, 5, 5, 10])
+            xu=np.array([2, 15, 2 * 373, 2 * 16, 300,  5,  5, 5, 5, 10]),
+            **kwargs
         )
         self.individuals = []
 
@@ -29,7 +30,7 @@ class ManyObjectiveGenerator(GeneratorProblem):
         results = []
         restrictions = []
         c = 0.2
-        for [ty, d, w, h, ti, st_mg, hi_mg, tu_mp, ju_mp, cn_mp] in x:
+        for [ty, d, w, h, ti, st_mg, hi_mg, tu_mp, ju_mp, cn_mp] in [x]:
             generator = ManyObjectiveGenerator.NotchGenerator(ty, d)
             level = generator.getGeneratedLevel(
                 ManyObjectiveGenerator.MarioLevelModel(w, h),
@@ -42,5 +43,5 @@ class ManyObjectiveGenerator(GeneratorProblem):
             results.append(result)
             self.individuals.append({"result": result, "restriction": (c * w) - ti, "level": level})
             restrictions.append((c * w) - ti)
-        out["F"] = np.array(results)
-        out["G"] = np.array(restrictions)
+        out["F"] = result
+        out["G"] = (c * w) - ti

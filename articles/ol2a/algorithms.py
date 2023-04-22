@@ -20,7 +20,7 @@ mutation = MixedVariableMutation(mask, {
 
 
 def params(dimension):
-    ref_dirs = get_reference_directions("energy", 4, dimension['pop_size'])
+    ref_dirs = get_reference_directions("energy", 3, dimension['pop_size'])
     return {
         'ref_dirs': ref_dirs,
         #'pop_size': dimension['pop_size'], Does not work with CTAEA. Also, pop_size will be equal to len(ref_dirs) on both algorithms
