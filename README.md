@@ -73,6 +73,11 @@ manyobjective/            - [TCC] Definição de problema many-objective
 multiobjective/           - [TCC] Definição de problema multi-objective
 visualization/            - Definições de plots que são gerados durante os experimentos
 ```
+## Como executar
+1. Clone o fork do Mario AI Framework, abra com sua IDE de Java (eu usei o IDEA, mas pode ser outra), e builde a aplicação gerando o `.jar`.
+2. Clone este repositório, instale as dependências (`pip install`) e altere o caminho do `.jar` no arquivo `GeneratorProblem.py`.
+3. Execute o experimento rodando o arquivo `articles/ol2a/main.py`
+  4. Para realizar os testes e gerar os gráficos, insira os resultados do experimento nos arquivos de script acima, e execute-os. Esta parte está muito manual, então leia a seção abaixo para apoiar neste processo.
 
 ## Dicas, pontos de atenção e melhorias necessárias
 - Os resultados dos experimentos estão sendo armazenados no arquivo `out.log` em formato de texto, o que torna difícil extraí-los. Uma boa melhoria seria armazená-los em um formato de fácil leitura pelo Python, como os próprios checkpoints.
