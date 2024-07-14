@@ -73,3 +73,12 @@ manyobjective/            - [TCC] Definição de problema many-objective
 multiobjective/           - [TCC] Definição de problema multi-objective
 visualization/            - Definições de plots que são gerados durante os experimentos
 ```
+
+## Dicas, pontos de atenção e melhorias necessárias
+- Os resultados dos experimentos estão sendo armazenados no arquivo `out.log` em formato de texto, o que torna difícil extraí-los. Uma boa melhoria seria armazená-los em um formato de fácil leitura pelo Python, como os próprios checkpoints.
+  - Enquanto não há o salvamento e leitura automática destes resultados, você pode:
+    1. Usando o terminal do linux, acesse a pasta onde está o arquivo de saída.
+    2. Execute o comando `cat out.log | pcregrep -M "(Non-dominated solutions \(x\):\narray\([^(]*\)|using [^\n]*\n)" > filtered_file`. Este comando irá gerar um arquivo chamado `filtered_file` contendo somente os parâmetros dos indivíduos (x). Para obter os resultados das funções objetivo, troque `\(x\)` por `\(f\)`
+    3. Formate o arquivo em um editor de texto à sua escolha para colocar na estrutura necessária do Python
+- Os scripts acima não estão diretamente integrados ao experimento, e precisam ser executados manualmente após o término do experimento. Uma boa melhoria seria executá-los automaticamente ao final do experimento.
+- O otimizador em Python se conecta ao Mario AI Framework através do arquivo compilado `.jar `. Modifique a referência à ele no arquivo `GeneratorProblem.py`. Uma boa melhoria seria tornar esse valor parametrizável, ou relativo.
